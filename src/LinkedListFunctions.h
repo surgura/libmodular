@@ -73,6 +73,7 @@ void Mdr_LinkedList_Remove(Mdr_LinkedList* instance, Mdr_LinkedListNode* node);
     Get a pointer to the data stored in a node.
 
     @param  node    The node to get the data from.
+    @return         A pointer to the data.
 **/
 void* Mdr_LinkedList_GetData(Mdr_LinkedListNode* node);
 

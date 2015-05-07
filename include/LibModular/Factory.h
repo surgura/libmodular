@@ -18,6 +18,9 @@
 #include "Types.h"
 #include "LinkedList.h"
 
+/**
+    Result codes for LibModular functions.
+**/
 typedef enum
 {
     /**
@@ -44,11 +47,16 @@ typedef enum
 **/
 typedef struct
 {
+    /**
+        All registered modules.
+    **/
     Mdr_LinkedList modules;
+    /**
+        All created instances.
+    **/
     Mdr_LinkedList instances;
     /**
         The amount of instances that are currently active.
-
     **/
     u32 instanceCount;
     /**
@@ -57,7 +65,13 @@ typedef struct
     u32 totalInstanceSize;
 } Mdr_Factory;
 
+/**
+    Identifier for a registered module.
+**/
 typedef Mdr_LinkedListNode ModuleID;
+/**
+    Identifier for an instance created via Instantiate.
+**/
 typedef Mdr_LinkedListNode InstanceID;
 
 /**
@@ -71,6 +85,7 @@ void Mdr_ConstructFactory(Mdr_Factory* instance);
     Destroys a LibModular instance.
     Cleans up all memory allocated by this library for the instance.
     Does not deallocate the instance itself, as it is user owned memory.
+    the deleteInstance functions will be called.
 
     @param  instance    The factory instance.
 **/
@@ -145,7 +160,6 @@ Mdr_Result Mdr_Instantiate(Mdr_Factory* instance, InstanceID** instanceId);
     @param  instance    The factory instance.
     @param  instanceId  The id of the instance.
     @return             MDR_SUCCESS when everything went well.
-    @return             MDR_ALLOC_FAIL if allocating memory was needed but it failed.
 **/
 Mdr_Result Mdr_DeleteInstance(Mdr_Factory* instance, InstanceID* instanceId);
 

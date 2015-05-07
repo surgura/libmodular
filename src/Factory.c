@@ -27,9 +27,76 @@ void Mdr_ConstructFactory(Mdr_Factory* instance)
     instance->totalInstanceSize = 0;
 }
 
-void Mdr_DestructFactory(Mdr_Factory* instance)
+void Mdr_DestructFactory(Mdr_Factory* factory)
 {
+    // If there are no instances, there is no need to delete all instances,
+    // and no need to destruct the instance list, because it has never been constructed.
+    if(!factory->instanceCount == 0)
+    {
+        // If the total instance count is 0, we just call the destroy functions with a dummy pointer.
+        if(factory->totalInstanceSize == 0)
+        {
+            for(u32 i = 0; i < factory->instanceCount; ++i)
+            {
+                // Get a pointer to the first node of the modules
+                // Only do something if there are actually modules registered.
+                Mdr_LinkedListNode* moduleNode;
+                if(Mdr_LinkedList_First(&factory->modules, &moduleNode) > 0)
+                {
+                    // Iterate over all modules
+                    do
+                    {
+                        // Get module data
+                        Mdr_Module* module = Mdr_LinkedList_GetData(moduleNode);
+                        // Call module instantiate of module instance memory location
+                        module->deleteInstance(module->userData, 0);
+                    } while(Mdr_LinkedList_Next(&factory->modules, &moduleNode, moduleNode) > 0);
+                }
+            }
+        }
+        else
+        {
+            // TODO destroy back to front
+            // TODO i don't think its working for all instances
 
+            // Iterate over all instances
+            Mdr_LinkedListNode* instanceNode;
+            if(Mdr_LinkedList_First(&factory->instances, &instanceNode) > 0)
+            {
+                // Iterate over all modules
+                do
+                {
+                    // Get instance data as byte pointer
+                    u8* instances = Mdr_LinkedList_GetData(instanceNode);
+
+                    // Iterate over all modules and call the destruct function on their instance data
+
+                    // Get a pointer to the first node of the modules
+                    // Only do something if there are actually modules registered.
+                    Mdr_LinkedListNode* moduleNode;
+                    if(Mdr_LinkedList_First(&factory->modules, &moduleNode) > 0)
+                    {
+                        // Iterate over all modules
+                        do
+                        {
+                            // Get module data
+                            Mdr_Module* module = Mdr_LinkedList_GetData(moduleNode);
+                            // Call module instantiate of module instance memory location
+                            module->deleteInstance(module->userData, instances);
+                            // Go to next module instance memory location
+                            instances += module->instanceSize;
+                        } while(Mdr_LinkedList_Next(&factory->modules, &moduleNode, moduleNode) > 0);
+                    }
+                } while(Mdr_LinkedList_Next(&factory->modules, &instanceNode, instanceNode) > 0);
+            }
+        }
+
+        // Destruct instance list
+        Mdr_LinkedList_Delete(&factory->instances);
+    }
+
+    // Destruct module list
+    Mdr_LinkedList_Delete(&factory->modules);
 }
 
 Mdr_Result Mdr_RegisterModule(Mdr_Factory* instance, ModuleID** newModuleId, void* userData,
@@ -74,7 +141,7 @@ Mdr_Result Mdr_Instantiate(Mdr_Factory* instance, InstanceID** instanceId)
         Mdr_LinkedList_Initialize(&instance->instances, instance->totalInstanceSize);
     }
 
-    // Pointer to the instance date as byte pointer
+    // Pointer to the instance data as byte pointer
     u8* instances;
 
     // If total instance size is 0, we can skip appending a new instance.
@@ -118,6 +185,9 @@ Mdr_Result Mdr_Instantiate(Mdr_Factory* instance, InstanceID** instanceId)
             instances += module->instanceSize;
         } while(Mdr_LinkedList_Next(&instance->modules, &moduleNode, moduleNode) > 0);
     }
+
+    // Increment instance count
+    ++instance->instanceCount;
 
     return MDR_SUCCESS;
 }
