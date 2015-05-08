@@ -126,9 +126,11 @@ Mdr_Result Mdr_UnregisterModule(Mdr_Factory* instance, ModuleID moduleId)
 
 Mdr_Result Mdr_GetLatestModuleInstance(Mdr_Factory* instance, void** result, const ModuleID moduleId)
 {
+    // Check if there are any instances
     if(instance->instanceCount == 0)
         return MDR_NO_INSTANCE;
 
+    // Get the latest data from the module
     Mdr_Module* module = Mdr_LinkedList_GetData(moduleId);
     *result = module->latestInstance;
     return MDR_SUCCESS;
