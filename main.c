@@ -28,12 +28,12 @@ int main()
 
     Script script;
     //script.a = 3;
-    ModuleID* scriptId;
+    ModuleID scriptId;
     Mdr_RegisterModule(&factory, &scriptId, &script, sizeof(ScriptInstance), &ScriptInstantiate, &ScriptDelete);
     Mdr_RegisterModule(&factory, &scriptId, &script, sizeof(ScriptInstance), &ScriptInstantiate, &ScriptDelete);
     Mdr_RegisterModule(&factory, &scriptId, &script, sizeof(ScriptInstance), &ScriptInstantiate, &ScriptDelete);
 
-    InstanceID* instanceId;
+    InstanceID instanceId;
     Mdr_Instantiate(&factory, &instanceId);
     Mdr_Instantiate(&factory, &instanceId);
 

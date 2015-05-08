@@ -118,6 +118,11 @@ Mdr_Result Mdr_RegisterModule(Mdr_Factory* instance, ModuleID* newModuleId, void
     return MDR_SUCCESS;
 }
 
+Mdr_Result Mdr_UnregisterModule(Mdr_Factory* instance, ModuleID moduleId)
+{
+    // TODO
+}
+
 Mdr_Result Mdr_GetLatestModuleInstance(Mdr_Factory* instance, void** result, const ModuleID moduleId)
 {
     // TODO

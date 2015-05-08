@@ -121,6 +121,17 @@ Mdr_Result Mdr_RegisterModule(Mdr_Factory* instance, ModuleID* newModuleId,
     void (*deleteInstance)(void*, void*));
 
 /**
+    Remove a module from the factory.
+    No instances may be there when this is done.
+
+    @param  instance        The factory instance
+    @param  moduleId        Id of the module to remove, obtained via the register function.
+    @return                 MDR_SUCCESS if everything went well.
+                            MDR_HAS_INSTANCE if ther eis at least one instance so calling this is not possible.
+**/
+Mdr_Result Mdr_UnregisterModule(Mdr_Factory* instance, ModuleID moduleId);
+
+/**
     Get the latest created instance of a module with the given id.
     Make sure moduleId is valid, because this is not checked.
     If an error is returned, all changes have already been reverted nicely.

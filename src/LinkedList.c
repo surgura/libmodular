@@ -21,7 +21,16 @@ void Mdr_LinkedList_Initialize(Mdr_LinkedList* instance, u16 dataSize)
 
 void Mdr_LinkedList_Delete(Mdr_LinkedList* instance)
 {
-    // TODO
+    // Iterate over all nodes
+    Mdr_LinkedListNode* currentNode = instance->firstNode;
+    while(currentNode != 0)
+    {
+        // Find next node
+        Mdr_LinkedListNode* nextNode = Mdr_LinkedList_Next(instance, currentNode);
+        // Free memory for node
+        free(currentNode);
+        currentNode = nextNode;
+    }
 }
 
 Mdr_LinkedListNode* Mdr_LinkedList_Append(Mdr_LinkedList* instance)
