@@ -18,6 +18,7 @@ typedef struct
     u16 instanceSize;
     void (*instantiate)(void*, void*);
     void (*deleteInstance)(void*, void*);
+    void* latestInstance;
 } Mdr_Module;
 
 void Mdr_ConstructFactory(Mdr_Factory* instance)
@@ -125,7 +126,12 @@ Mdr_Result Mdr_UnregisterModule(Mdr_Factory* instance, ModuleID moduleId)
 
 Mdr_Result Mdr_GetLatestModuleInstance(Mdr_Factory* instance, void** result, const ModuleID moduleId)
 {
-    // TODO
+    if(instance->instanceCount == 0)
+        return MDR_NO_INSTANCE;
+
+    Mdr_Module* module = Mdr_LinkedList_GetData(moduleId);
+    *result = module->latestInstance;
+    return MDR_SUCCESS;
 }
 
 Mdr_Result Mdr_Instantiate(Mdr_Factory* instance, InstanceID* instanceId)
@@ -149,6 +155,9 @@ Mdr_Result Mdr_Instantiate(Mdr_Factory* instance, InstanceID* instanceId)
             // Appending has failed, the only option being allocation fail.
             return MDR_ALLOC_FAIL;
         }
+
+        // Increment instance count
+        ++instance->instanceCount;
 
         instances = Mdr_LinkedList_GetData(instancesNode);
 
@@ -176,15 +185,14 @@ Mdr_Result Mdr_Instantiate(Mdr_Factory* instance, InstanceID* instanceId)
             Mdr_Module* module = Mdr_LinkedList_GetData(moduleNode);
             // Call module instantiate of module instance memory location
             module->instantiate(module->userData, instances);
+            // Set module lastest instance
+            module->latestInstance = instances;
             // Go to next module instance memory location
             instances += module->instanceSize;
             // Go to next module node
             moduleNode = Mdr_LinkedList_Next(&instance->modules, moduleNode);
         } while(moduleNode != 0);
     }
-
-    // Increment instance count
-    ++instance->instanceCount;
 
     return MDR_SUCCESS;
 }

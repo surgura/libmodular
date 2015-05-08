@@ -3,22 +3,47 @@
 
 typedef struct
 {
-    int a;
 } Script;
 
 typedef struct
 {
+    int myint;
 } ScriptInstance;
 
 void ScriptInstantiate(void* userData, void* instance)
 {
-    printf("create\n");
+    ((ScriptInstance*)instance)->myint = 50;
 }
 
 void ScriptDelete(void* userData, void* instance)
 {
-    printf("delete\n");
-    //printf("%d\n", ((Script*)userData)->a);
+}
+
+typedef struct
+{
+    Mdr_Factory* factory;
+    ModuleID scriptId;
+} ScriptUser;
+
+typedef struct
+{
+} ScriptUserInstance;
+
+void ScriptUserInstantiate(void* userData, void* instance)
+{
+    ScriptUser* scriptUser = (ScriptUser*)userData;
+    ScriptInstance* scriptInstance;
+    if(Mdr_GetLatestModuleInstance(scriptUser->factory, (void**)&scriptInstance, scriptUser->scriptId) < 0)
+    {
+        printf("crashycrashy\n");
+    }
+
+    printf("%d\n", scriptInstance->myint);
+}
+
+void ScriptUserDelete(void* userData, void* instance)
+{
+
 }
 
 int main()
@@ -27,14 +52,16 @@ int main()
     Mdr_ConstructFactory(&factory);
 
     Script script;
-    //script.a = 3;
     ModuleID scriptId;
     Mdr_RegisterModule(&factory, &scriptId, &script, sizeof(ScriptInstance), &ScriptInstantiate, &ScriptDelete);
-    Mdr_RegisterModule(&factory, &scriptId, &script, sizeof(ScriptInstance), &ScriptInstantiate, &ScriptDelete);
-    Mdr_RegisterModule(&factory, &scriptId, &script, sizeof(ScriptInstance), &ScriptInstantiate, &ScriptDelete);
+
+    ScriptUser scriptUser;
+    scriptUser.factory = &factory;
+    scriptUser.scriptId = scriptId;
+    ModuleID scriptUserId;
+    Mdr_RegisterModule(&factory, &scriptUserId, &scriptUser, sizeof(ScriptUserInstance), &ScriptUserInstantiate, &ScriptUserDelete);
 
     InstanceID instanceId;
-    Mdr_Instantiate(&factory, &instanceId);
     Mdr_Instantiate(&factory, &instanceId);
 
     Mdr_DestructFactory(&factory);
