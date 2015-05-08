@@ -17,7 +17,8 @@ void ScriptInstantiate(void* userData, void* instance)
 
 void ScriptDelete(void* userData, void* instance)
 {
-    printf("%d\n", ((Script*)userData)->a);
+    printf("delete\n");
+    //printf("%d\n", ((Script*)userData)->a);
 }
 
 int main()
@@ -26,7 +27,7 @@ int main()
     Mdr_ConstructFactory(&factory);
 
     Script script;
-    script.a = 3;
+    //script.a = 3;
     ModuleID* scriptId;
     Mdr_RegisterModule(&factory, &scriptId, &script, sizeof(ScriptInstance), &ScriptInstantiate, &ScriptDelete);
     Mdr_RegisterModule(&factory, &scriptId, &script, sizeof(ScriptInstance), &ScriptInstantiate, &ScriptDelete);

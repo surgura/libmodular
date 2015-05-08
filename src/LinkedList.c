@@ -24,12 +24,12 @@ void Mdr_LinkedList_Delete(Mdr_LinkedList* instance)
     // TODO
 }
 
-Mdr_LinkedList_Result Mdr_LinkedList_Append(Mdr_LinkedList* instance, Mdr_LinkedListNode** node)
+Mdr_LinkedListNode* Mdr_LinkedList_Append(Mdr_LinkedList* instance)
 {
     // Allocate memory for node.
     Mdr_LinkedListNode* newNode = malloc(instance->dataSize + 2 * sizeof(Mdr_LinkedListNode*));
     if(newNode == 0)
-        return MDR_LINKEDLIST_ALLOC_FAIL;
+        return 0;
 
     // Check if this is the first node
     if(instance->firstNode == 0)
@@ -74,10 +74,7 @@ Mdr_LinkedList_Result Mdr_LinkedList_Append(Mdr_LinkedList* instance, Mdr_Linked
         instance->lastNode = newNode;
     }
 
-    // Set return value
-    *node = newNode;
-
-    return MDR_LINKEDLIST_SUCCESS;
+    return newNode;
 }
 
 void Mdr_LinkedList_Remove(Mdr_LinkedList* instance, Mdr_LinkedListNode* node)
@@ -91,56 +88,24 @@ void* Mdr_LinkedList_GetData(Mdr_LinkedListNode* node)
     return node;
 }
 
-Mdr_LinkedList_Result Mdr_LinkedList_Next(Mdr_LinkedList* instance, Mdr_LinkedListNode** nextNode, Mdr_LinkedListNode* node)
+Mdr_LinkedListNode* Mdr_LinkedList_Next(Mdr_LinkedList* instance, Mdr_LinkedListNode* node)
 {
     Mdr_LinkedListNode** nodeNextNode = (u8*)node + instance->dataSize + sizeof(Mdr_LinkedListNode*);
-    if(*nodeNextNode == 0)
-    {
-        return MDR_LINKEDLIST_NO_NODE;
-    }
-    else
-    {
-        *nextNode = *nodeNextNode;
-    }
+    return *nodeNextNode;
 }
 
-Mdr_LinkedList_Result Mdr_LinkedList_Previous(Mdr_LinkedList* instance, Mdr_LinkedListNode** previousNode, Mdr_LinkedListNode* node)
+Mdr_LinkedListNode* Mdr_LinkedList_Previous(Mdr_LinkedList* instance, Mdr_LinkedListNode* node)
 {
     Mdr_LinkedListNode** nodePreviousNode = (u8*)node + instance->dataSize;
-    if(*nodePreviousNode == 0)
-    {
-        return MDR_LINKEDLIST_NO_NODE;
-    }
-    else
-    {
-        *previousNode = *nodePreviousNode;
-    }
+    return *nodePreviousNode;
 }
 
-Mdr_LinkedList_Result Mdr_LinkedList_First(Mdr_LinkedList* instance, Mdr_LinkedListNode** firstNode)
+Mdr_LinkedListNode* Mdr_LinkedList_First(Mdr_LinkedList* instance)
 {
-    if(instance->firstNode == 0)
-    {
-        return MDR_LINKEDLIST_NO_NODE;
-    }
-    else
-    {
-        *firstNode = instance->firstNode;
-        return MDR_LINKEDLIST_SUCCESS;
-    }
+    return instance->firstNode;
 }
 
-Mdr_LinkedList_Result Mdr_LinkedList_Last(Mdr_LinkedList* instance, Mdr_LinkedListNode** firstNode)
+Mdr_LinkedListNode* Mdr_LinkedList_Last(Mdr_LinkedList* instance)
 {
-    // Check if the list is empty
-    if(instance->lastNode == 0)
-    {
-        return MDR_LINKEDLIST_NO_NODE;
-    }
-    else
-    {
-        // Return the last node
-        *firstNode = instance->lastNode;
-        return MDR_LINKEDLIST_SUCCESS;
-    }
+    return instance->lastNode;
 }

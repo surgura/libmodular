@@ -35,38 +35,44 @@ void Mdr_DestructFactory(Mdr_Factory* factory)
     {
         // Get pointer to first instance data.
         // If 0 is returned, we set instanceNode to 0 so we know there is no data.
-        Mdr_LinkedListNode* instanceNode;
-        if(Mdr_LinkedList_Last(&factory->instances, &instanceNode) < 0)
-        {
-            instanceNode = 0;
-        }
+        Mdr_LinkedListNode* instanceNode = Mdr_LinkedList_Last(&factory->instances);
         // Iterate over all instances
         for(u32 i = 0; i < factory->instanceCount; ++i)
         {
             // Get instance data as byte pointer
-            u8* instances = Mdr_LinkedList_GetData(instanceNode);
+            // If instanceNode is 0, meaning there are no module instances, we skip this step
+            u8* instances;
+            if(instanceNode != 0)
+            {
+                instances = Mdr_LinkedList_GetData(instanceNode);
+            }
 
             // Get a pointer to the first node of the modules
             // Only do something if there are actually modules registered.
-            Mdr_LinkedListNode* moduleNode;
-            if(Mdr_LinkedList_Last(&factory->modules, &moduleNode) > 0)
+            Mdr_LinkedListNode* moduleNode = Mdr_LinkedList_Last(&factory->modules);
+            if(moduleNode != 0)
             {
                 // Iterate over all modules
                 do
                 {
                     // Get module data
                     Mdr_Module* module = Mdr_LinkedList_GetData(moduleNode);
-                    // Call delete for module
-                    module->deleteInstance(module->userData, instances);
-                    // Go to next module instance memory location
-                    instances += module->instanceSize;
-                } while(Mdr_LinkedList_Previous(&factory->modules, &moduleNode, moduleNode) > 0);
+                    // Call delete for module. If the module has no data, send a null pointer as instance data
+                    module->deleteInstance(module->userData, module->instanceSize == 0 ? 0 : instances);
+                    // Go to next module instance memory location, if there are any instances
+                    if(instanceNode != 0)
+                    {
+                        instances += module->instanceSize;
+                    }
+                    // Go to next module node
+                    moduleNode = Mdr_LinkedList_Previous(&factory->modules, moduleNode);
+                } while(moduleNode != 0);
             }
 
             // Go to next instance if there is any data
             if(instanceNode != 0)
             {
-                Mdr_LinkedList_Previous(&factory->instances, &instanceNode, instanceNode);
+                instanceNode = Mdr_LinkedList_Previous(&factory->instances, instanceNode);
             }
         }
 
@@ -89,8 +95,8 @@ Mdr_Result Mdr_RegisterModule(Mdr_Factory* instance, ModuleID** newModuleId, voi
     }
 
     // Add a new node to the modules linked list
-    Mdr_LinkedListNode* node;
-    if(Mdr_LinkedList_Append(&instance->modules, &node) < 0)
+    Mdr_LinkedListNode* node = Mdr_LinkedList_Append(&instance->modules);
+    if(node == 0)
     {
         // Appending has failed, the only option being allocation fail.
         return MDR_ALLOC_FAIL;
@@ -127,8 +133,8 @@ Mdr_Result Mdr_Instantiate(Mdr_Factory* instance, InstanceID** instanceId)
     if(instance->totalInstanceSize > 0)
     {
         // Append a new instance to the list
-        Mdr_LinkedListNode* instancesNode;
-        if(!Mdr_LinkedList_Append(&instance->instances, &instancesNode))
+        Mdr_LinkedListNode* instancesNode = Mdr_LinkedList_Append(&instance->instances);
+        if(instancesNode == 0)
         {
             // Appending has failed, the only option being allocation fail.
             return MDR_ALLOC_FAIL;
@@ -150,8 +156,8 @@ Mdr_Result Mdr_Instantiate(Mdr_Factory* instance, InstanceID** instanceId)
 
     // Get a pointer to the first node of the modules
     // Only initialize if there are actually module instances to initialize.
-    Mdr_LinkedListNode* moduleNode;
-    if(Mdr_LinkedList_First(&instance->modules, &moduleNode) > 0)
+    Mdr_LinkedListNode* moduleNode = Mdr_LinkedList_First(&instance->modules);
+    if(moduleNode != 0)
     {
         // Iterate over all modules
         do
@@ -162,7 +168,9 @@ Mdr_Result Mdr_Instantiate(Mdr_Factory* instance, InstanceID** instanceId)
             module->instantiate(module->userData, instances);
             // Go to next module instance memory location
             instances += module->instanceSize;
-        } while(Mdr_LinkedList_Next(&instance->modules, &moduleNode, moduleNode) > 0);
+            // Go to next module node
+            moduleNode = Mdr_LinkedList_Next(&instance->modules, moduleNode);
+        } while(moduleNode != 0);
     }
 
     // Increment instance count
