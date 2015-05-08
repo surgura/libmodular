@@ -84,7 +84,7 @@ void Mdr_DestructFactory(Mdr_Factory* factory)
     Mdr_LinkedList_Delete(&factory->modules);
 }
 
-Mdr_Result Mdr_RegisterModule(Mdr_Factory* instance, ModuleID** newModuleId, void* userData,
+Mdr_Result Mdr_RegisterModule(Mdr_Factory* instance, ModuleID* newModuleId, void* userData,
     const u16 instanceSize, void (*instantiate)(void*, void*), void (*deleteInstance)(void*, void*))
 {
     // Check if there there is one or more instances
@@ -111,14 +111,19 @@ Mdr_Result Mdr_RegisterModule(Mdr_Factory* instance, ModuleID** newModuleId, voi
 
     // Increment size of the big instance.
     instance->totalInstanceSize += instanceSize;
+
+    // Set return value
+    *newModuleId = node;
+
+    return MDR_SUCCESS;
 }
 
-Mdr_Result Mdr_GetLatestModuleInstance(Mdr_Factory* instance, void** result, const ModuleID* moduleId)
+Mdr_Result Mdr_GetLatestModuleInstance(Mdr_Factory* instance, void** result, const ModuleID moduleId)
 {
     // TODO
 }
 
-Mdr_Result Mdr_Instantiate(Mdr_Factory* instance, InstanceID** instanceId)
+Mdr_Result Mdr_Instantiate(Mdr_Factory* instance, InstanceID* instanceId)
 {
     // If there are no instances yet, we first have to initialize the instance list
     if(instance->instanceCount == 0)
@@ -179,7 +184,7 @@ Mdr_Result Mdr_Instantiate(Mdr_Factory* instance, InstanceID** instanceId)
     return MDR_SUCCESS;
 }
 
-Mdr_Result Mdr_DeleteInstance(Mdr_Factory* instance, InstanceID* instanceId)
+Mdr_Result Mdr_DeleteInstance(Mdr_Factory* instance, InstanceID instanceId)
 {
     // TODO also make sure you check if the totalInstanceSize is 0
 }

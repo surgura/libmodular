@@ -68,11 +68,11 @@ typedef struct
 /**
     Identifier for a registered module.
 **/
-typedef Mdr_LinkedListNode ModuleID;
+typedef Mdr_LinkedListNode* ModuleID;
 /**
     Identifier for an instance created via Instantiate.
 **/
-typedef Mdr_LinkedListNode InstanceID;
+typedef Mdr_LinkedListNode* InstanceID;
 
 /**
     Initializes a LibModular instance.
@@ -115,7 +115,7 @@ void Mdr_DestructFactory(Mdr_Factory* instance);
                             MDR_ALLOC_FAIL if allocating memory was needed but it failed.
                             MDR_HAS_INSTANCE if there is at least one instance so calling this is not possible.
 **/
-Mdr_Result Mdr_RegisterModule(Mdr_Factory* instance, ModuleID** newModuleId,
+Mdr_Result Mdr_RegisterModule(Mdr_Factory* instance, ModuleID* newModuleId,
     void* userData, const u16 instanceSize,
     void (*instantiate)(void*, void*),
     void (*deleteInstance)(void*, void*));
@@ -131,7 +131,7 @@ Mdr_Result Mdr_RegisterModule(Mdr_Factory* instance, ModuleID** newModuleId,
     @return             MDR_SUCCESS when everything went well.
                         MDR_NO_INSTANCE when no instance has yet been made.
 **/
-Mdr_Result Mdr_GetLatestModuleInstance(Mdr_Factory* instance, void** result, const ModuleID* moduleId);
+Mdr_Result Mdr_GetLatestModuleInstance(Mdr_Factory* instance, void** result, const ModuleID moduleId);
 
 /**
     Instantiate a modular instance through the factory,
@@ -149,7 +149,7 @@ Mdr_Result Mdr_GetLatestModuleInstance(Mdr_Factory* instance, void** result, con
     @return             MDR_SUCCESS when everything went well.
                         MDR_ALLOC_FAIL if allocating memory was needed but it failed.
 **/
-Mdr_Result Mdr_Instantiate(Mdr_Factory* instance, InstanceID** instanceId);
+Mdr_Result Mdr_Instantiate(Mdr_Factory* instance, InstanceID* instanceId);
 
 /**
     Remove an instance instantiated earlier.
@@ -161,7 +161,7 @@ Mdr_Result Mdr_Instantiate(Mdr_Factory* instance, InstanceID** instanceId);
     @param  instanceId  The id of the instance.
     @return             MDR_SUCCESS when everything went well.
 **/
-Mdr_Result Mdr_DeleteInstance(Mdr_Factory* instance, InstanceID* instanceId);
+Mdr_Result Mdr_DeleteInstance(Mdr_Factory* instance, InstanceID instanceId);
 
 /**
     End header guard
