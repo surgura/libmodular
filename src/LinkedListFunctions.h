@@ -89,6 +89,17 @@ void* Mdr_LinkedList_GetData(Mdr_LinkedListNode* node);
 Mdr_LinkedList_Result Mdr_LinkedList_Next(Mdr_LinkedList* instance, Mdr_LinkedListNode** nextNode, Mdr_LinkedListNode* node);
 
 /**
+    Get the node before the given node.
+
+    @param  instance    Pointer to the linked list instance.
+    @param  nextNode    The place to store the previous node at.
+    @param  node        The node to get the previous node from.
+    @return             MDR_LINKEDLIST_SUCCESS if everything went fine.
+                        MDR_LINKEDLIST_NO_NODE if node is the last node in the list.
+**/
+Mdr_LinkedList_Result Mdr_LinkedList_Previous(Mdr_LinkedList* instance, Mdr_LinkedListNode** previousNode, Mdr_LinkedListNode* node);
+
+/**
     Get the first node of the list.
 
     @param  instance    Pointer to the linked list instance.
@@ -97,6 +108,16 @@ Mdr_LinkedList_Result Mdr_LinkedList_Next(Mdr_LinkedList* instance, Mdr_LinkedLi
                         MDR_LINKEDLIST_NO_NODE if the list is empty.
 **/
 Mdr_LinkedList_Result Mdr_LinkedList_First(Mdr_LinkedList* instance, Mdr_LinkedListNode** firstNode);
+
+/**
+    Get the last node of the list.
+
+    @param  instance    Pointer to the linked list instance.
+    @param  firstNode   Place to store the result node at.
+    @return             MDR_LINKEDLIST_SUCCESS if everything went fine.
+                        MDR_LINKEDLIST_NO_NODE if the list is empty.
+**/
+Mdr_LinkedList_Result Mdr_LinkedList_Last(Mdr_LinkedList* instance, Mdr_LinkedListNode** firstNode);
 
 /**
     End header guard

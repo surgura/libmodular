@@ -33,61 +33,40 @@ void Mdr_DestructFactory(Mdr_Factory* factory)
     // and no need to destruct the instance list, because it has never been constructed.
     if(!factory->instanceCount == 0)
     {
-        // If the total instance count is 0, we just call the destroy functions with a dummy pointer.
-        if(factory->totalInstanceSize == 0)
+        // Get pointer to first instance data.
+        // If 0 is returned, we set instanceNode to 0 so we know there is no data.
+        Mdr_LinkedListNode* instanceNode;
+        if(Mdr_LinkedList_Last(&factory->instances, &instanceNode) < 0)
         {
-            for(u32 i = 0; i < factory->instanceCount; ++i)
-            {
-                // Get a pointer to the first node of the modules
-                // Only do something if there are actually modules registered.
-                Mdr_LinkedListNode* moduleNode;
-                if(Mdr_LinkedList_First(&factory->modules, &moduleNode) > 0)
-                {
-                    // Iterate over all modules
-                    do
-                    {
-                        // Get module data
-                        Mdr_Module* module = Mdr_LinkedList_GetData(moduleNode);
-                        // Call module instantiate of module instance memory location
-                        module->deleteInstance(module->userData, 0);
-                    } while(Mdr_LinkedList_Next(&factory->modules, &moduleNode, moduleNode) > 0);
-                }
-            }
+            instanceNode = 0;
         }
-        else
+        // Iterate over all instances
+        for(u32 i = 0; i < factory->instanceCount; ++i)
         {
-            // TODO destroy back to front
-            // TODO i don't think its working for all instances
+            // Get instance data as byte pointer
+            u8* instances = Mdr_LinkedList_GetData(instanceNode);
 
-            // Iterate over all instances
-            Mdr_LinkedListNode* instanceNode;
-            if(Mdr_LinkedList_First(&factory->instances, &instanceNode) > 0)
+            // Get a pointer to the first node of the modules
+            // Only do something if there are actually modules registered.
+            Mdr_LinkedListNode* moduleNode;
+            if(Mdr_LinkedList_Last(&factory->modules, &moduleNode) > 0)
             {
                 // Iterate over all modules
                 do
                 {
-                    // Get instance data as byte pointer
-                    u8* instances = Mdr_LinkedList_GetData(instanceNode);
+                    // Get module data
+                    Mdr_Module* module = Mdr_LinkedList_GetData(moduleNode);
+                    // Call delete for module
+                    module->deleteInstance(module->userData, instances);
+                    // Go to next module instance memory location
+                    instances += module->instanceSize;
+                } while(Mdr_LinkedList_Previous(&factory->modules, &moduleNode, moduleNode) > 0);
+            }
 
-                    // Iterate over all modules and call the destruct function on their instance data
-
-                    // Get a pointer to the first node of the modules
-                    // Only do something if there are actually modules registered.
-                    Mdr_LinkedListNode* moduleNode;
-                    if(Mdr_LinkedList_First(&factory->modules, &moduleNode) > 0)
-                    {
-                        // Iterate over all modules
-                        do
-                        {
-                            // Get module data
-                            Mdr_Module* module = Mdr_LinkedList_GetData(moduleNode);
-                            // Call module instantiate of module instance memory location
-                            module->deleteInstance(module->userData, instances);
-                            // Go to next module instance memory location
-                            instances += module->instanceSize;
-                        } while(Mdr_LinkedList_Next(&factory->modules, &moduleNode, moduleNode) > 0);
-                    }
-                } while(Mdr_LinkedList_Next(&factory->modules, &instanceNode, instanceNode) > 0);
+            // Go to next instance if there is any data
+            if(instanceNode != 0)
+            {
+                Mdr_LinkedList_Previous(&factory->instances, &instanceNode, instanceNode);
             }
         }
 
@@ -130,7 +109,7 @@ Mdr_Result Mdr_RegisterModule(Mdr_Factory* instance, ModuleID** newModuleId, voi
 
 Mdr_Result Mdr_GetLatestModuleInstance(Mdr_Factory* instance, void** result, const ModuleID* moduleId)
 {
-
+    // TODO
 }
 
 Mdr_Result Mdr_Instantiate(Mdr_Factory* instance, InstanceID** instanceId)

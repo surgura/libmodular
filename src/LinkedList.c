@@ -21,7 +21,7 @@ void Mdr_LinkedList_Initialize(Mdr_LinkedList* instance, u16 dataSize)
 
 void Mdr_LinkedList_Delete(Mdr_LinkedList* instance)
 {
-
+    // TODO
 }
 
 Mdr_LinkedList_Result Mdr_LinkedList_Append(Mdr_LinkedList* instance, Mdr_LinkedListNode** node)
@@ -82,7 +82,7 @@ Mdr_LinkedList_Result Mdr_LinkedList_Append(Mdr_LinkedList* instance, Mdr_Linked
 
 void Mdr_LinkedList_Remove(Mdr_LinkedList* instance, Mdr_LinkedListNode* node)
 {
-
+    // TODO
 }
 
 void* Mdr_LinkedList_GetData(Mdr_LinkedListNode* node)
@@ -104,6 +104,19 @@ Mdr_LinkedList_Result Mdr_LinkedList_Next(Mdr_LinkedList* instance, Mdr_LinkedLi
     }
 }
 
+Mdr_LinkedList_Result Mdr_LinkedList_Previous(Mdr_LinkedList* instance, Mdr_LinkedListNode** previousNode, Mdr_LinkedListNode* node)
+{
+    Mdr_LinkedListNode** nodePreviousNode = (u8*)node + instance->dataSize;
+    if(*nodePreviousNode == 0)
+    {
+        return MDR_LINKEDLIST_NO_NODE;
+    }
+    else
+    {
+        *previousNode = *nodePreviousNode;
+    }
+}
+
 Mdr_LinkedList_Result Mdr_LinkedList_First(Mdr_LinkedList* instance, Mdr_LinkedListNode** firstNode)
 {
     if(instance->firstNode == 0)
@@ -113,6 +126,21 @@ Mdr_LinkedList_Result Mdr_LinkedList_First(Mdr_LinkedList* instance, Mdr_LinkedL
     else
     {
         *firstNode = instance->firstNode;
+        return MDR_LINKEDLIST_SUCCESS;
+    }
+}
+
+Mdr_LinkedList_Result Mdr_LinkedList_Last(Mdr_LinkedList* instance, Mdr_LinkedListNode** firstNode)
+{
+    // Check if the list is empty
+    if(instance->lastNode == 0)
+    {
+        return MDR_LINKEDLIST_NO_NODE;
+    }
+    else
+    {
+        // Return the last node
+        *firstNode = instance->lastNode;
         return MDR_LINKEDLIST_SUCCESS;
     }
 }

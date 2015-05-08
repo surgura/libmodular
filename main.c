@@ -3,21 +3,21 @@
 
 typedef struct
 {
+    int a;
 } Script;
 
 typedef struct
 {
-    int a;
 } ScriptInstance;
 
 void ScriptInstantiate(void* userData, void* instance)
 {
-    printf("create");
+    printf("create\n");
 }
 
 void ScriptDelete(void* userData, void* instance)
 {
-    printf("delete");
+    printf("%d\n", ((Script*)userData)->a);
 }
 
 int main()
@@ -26,6 +26,7 @@ int main()
     Mdr_ConstructFactory(&factory);
 
     Script script;
+    script.a = 3;
     ModuleID* scriptId;
     Mdr_RegisterModule(&factory, &scriptId, &script, sizeof(ScriptInstance), &ScriptInstantiate, &ScriptDelete);
     Mdr_RegisterModule(&factory, &scriptId, &script, sizeof(ScriptInstance), &ScriptInstantiate, &ScriptDelete);
