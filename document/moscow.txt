@@ -1,0 +1,13 @@
+[Must]
+Register modules
+Create object from all module instances
+Delete objects
+
+[Should]
+Unregister modules
+C++ binding
+
+[Could]
+module construct error support
+
+[Won't]

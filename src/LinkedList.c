@@ -9,114 +9,106 @@
 /**
     Include files
 **/
-#include "LinkedListFunctions.h"
+#include "Modular/LinkedListFunctions.h"
 #include <stdlib.h>
 
-void Mdr_LinkedList_Initialize(Mdr_LinkedList* instance, u16 dataSize)
+void Mdr_LinkedList_Initialize(Mdr_LinkedList* list)
 {
-    instance->dataSize = dataSize;
-    instance->firstNode = 0;
-    instance->lastNode = 0;
+    list->first = 0;
+    list->last = 0;
 }
 
-void Mdr_LinkedList_Delete(Mdr_LinkedList* instance)
+void Mdr_LinkedList_Cleanup(Mdr_LinkedList* list)
 {
-    // Iterate over all nodes
-    Mdr_LinkedListNode* currentNode = instance->firstNode;
-    while(currentNode != 0)
+    Mdr_LinkedListNode* node = list->first;
+    while(node != 0)
     {
-        // Find next node
-        Mdr_LinkedListNode* nextNode = Mdr_LinkedList_Next(instance, currentNode);
-        // Free memory for node
-        free(currentNode);
-        currentNode = nextNode;
+        Mdr_LinkedListNode* toFree = node;
+        node = node->next;
+        free(toFree);
     }
 }
 
-Mdr_LinkedListNode* Mdr_LinkedList_Append(Mdr_LinkedList* instance)
+Mdr_LinkedList_Result Mdr_LinkedList_PushBack(Mdr_LinkedList* list, Mdr_LinkedListNode** resultNode, u32 dataSize)
 {
-    // Allocate memory for node.
-    Mdr_LinkedListNode* newNode = malloc(instance->dataSize + 2 * sizeof(Mdr_LinkedListNode*));
+    // Calculate size of node
+    u64 nodeSize = sizeof(Mdr_LinkedListNode) + dataSize;
+    // Alocate memory for node
+    Mdr_LinkedListNode* newNode = malloc(nodeSize);
     if(newNode == 0)
-        return 0;
+        return MDR_LINKEDLIST_ALLOC_ERROR;
 
-    // Check if this is the first node
-    if(instance->firstNode == 0)
+    // If there is a last node
+    if(list->last != 0)
     {
-        // Set first node to new node
-        instance->firstNode = newNode;
+        // Set previous for new node to old last node
+        newNode->previous = list->last;
+        // Set new node next to 0
+        newNode->next = 0;
 
-        // Set last node to new node
-        instance->lastNode = newNode;
-
-        // Skip to the previous node pointer;
-        Mdr_LinkedListNode** previousNode = (Mdr_LinkedListNode**)((u8*)newNode + instance->dataSize);
-
-        // Set the previous node pointer to 0
-        *previousNode = 0;
-
-        // Skip to the next node pointer
-        Mdr_LinkedListNode** nextNode = (Mdr_LinkedListNode**)((u8*)previousNode + sizeof(Mdr_LinkedListNode*));
-
-        // Set last node pointer to 0
-        *nextNode = 0;
+        // Set next for old last
+        list->last->next = newNode;
+        // Set new node as last
+        list->last = newNode;
     }
     else
     {
-        // Set last node next node to new node
-        Mdr_LinkedListNode** lastNodeNextNode = (Mdr_LinkedListNode**)((u8*)instance->lastNode + instance->dataSize + sizeof(Mdr_LinkedListNode*));
-        *lastNodeNextNode = newNode;
-
-        // Skip to the previous node pointer of new node;
-        Mdr_LinkedListNode** previousNode = (Mdr_LinkedListNode**)((u8*)newNode + instance->dataSize);
-
-        // Set previous node pointer to last node
-        *previousNode = instance->lastNode;
-
-        // Skip to the next node pointer
-        Mdr_LinkedListNode** nextNode = (Mdr_LinkedListNode**)((u8*)previousNode + sizeof(Mdr_LinkedListNode*));
-
-        // Set last node pointer to 0
-        *nextNode = 0;
-
-        // Set last node to new node
-        instance->lastNode = newNode;
+        // Set new node as last and first
+        list->first = newNode;
+        list->last = newNode;
+        // Set previous and next of new node to 0
+        newNode->next = 0;
+        newNode->previous = 0;
     }
 
-    return newNode;
+    // Set return value
+    *resultNode = newNode;
+
+    return MDR_LINKEDLIST_SUCCESS;
 }
 
-void Mdr_LinkedList_Remove(Mdr_LinkedList* instance, Mdr_LinkedListNode* node)
+void Mdr_LinkedList_Remove(Mdr_LinkedList* list, Mdr_LinkedListNode* node)
 {
-    // TODO
+    // If this is the first node
+    if(node->previous == 0)
+    {
+        // Set first node to this nodes next node
+        list->first = node->next;
+    }
+    else
+    {
+        // Set previous nodes next to this nodes next
+        node->previous->next = node->next;
+    }
+
+    // If this is the last node
+    if(node->next == 0)
+    {
+        // Set last node to this nodes previous node
+        list->last = node->previous;
+    }
+    else
+    {
+        // Set next nodes previous to this nodes previous
+        node->next->previous = node->previous;
+    }
+
+    // Free memory
+    free(node);
+}
+
+Mdr_LinkedListNode* Mdr_LinkedList_Next(Mdr_LinkedListNode* node)
+{
+    return node->next;
+}
+
+Mdr_LinkedListNode* Mdr_LinkedList_Previous(Mdr_LinkedListNode* node)
+{
+    return node->previous;
 }
 
 void* Mdr_LinkedList_GetData(Mdr_LinkedListNode* node)
 {
-    // The block of data is contained at the start of the node.
-    return node;
-}
-
-Mdr_LinkedListNode* Mdr_LinkedList_Next(Mdr_LinkedList* instance, Mdr_LinkedListNode* node)
-{
-    // Pointer to the next node is contained after the data and previous block.
-    Mdr_LinkedListNode** nodeNextNode = (Mdr_LinkedListNode**)((u8*)node + instance->dataSize + sizeof(Mdr_LinkedListNode*));
-    return *nodeNextNode;
-}
-
-Mdr_LinkedListNode* Mdr_LinkedList_Previous(Mdr_LinkedList* instance, Mdr_LinkedListNode* node)
-{
-    // Pointer to the next node is contained after the data.
-    Mdr_LinkedListNode** nodePreviousNode = (Mdr_LinkedListNode**)((u8*)node + instance->dataSize);
-    return *nodePreviousNode;
-}
-
-Mdr_LinkedListNode* Mdr_LinkedList_First(Mdr_LinkedList* instance)
-{
-    return instance->firstNode;
-}
-
-Mdr_LinkedListNode* Mdr_LinkedList_Last(Mdr_LinkedList* instance)
-{
-    return instance->lastNode;
+    // Skip node struct to get to the data
+    return (u8*)node + sizeof(Mdr_LinkedListNode);
 }
