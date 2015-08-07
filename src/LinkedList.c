@@ -9,7 +9,7 @@
 /**
     Include files
 **/
-#include "Modular/LinkedListFunctions.h"
+#include "LinkedListFunctions.h"
 #include <stdlib.h>
 
 void Mdr_LinkedList_Initialize(Mdr_LinkedList* list)

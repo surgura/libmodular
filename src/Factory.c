@@ -10,8 +10,8 @@
     Include files
 **/
 #include "Modular/FactoryFunctions.h"
-#include "Modular/LinkedListFunctions.h"
-#include "Modular/Module.h"
+#include "LinkedListFunctions.h"
+#include "Module.h"
 
 void* GetCommonData(Mdr_Module* module)
 {

@@ -6,6 +6,7 @@ Delete objects
 [Should]
 Unregister modules
 C++ binding
+Object pool for creating instances
 
 [Could]
 module construct error support

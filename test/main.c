@@ -106,8 +106,8 @@ int main()
     {
 
     }
-    //Mdr_Module gui = Mdr_Register(&factory, sizeof(GUIModule), sizeof(GUIInstance), &GUIConstruct, &GUIDestruct);
-    //Mdr_Module guiscript = Mdr_Register(&factory, sizeof(GUIScriptModule), sizeof(GUIScriptInstance), &GUIScriptConstruct, &GUIScriptDestruct);
+//    Mdr_Module gui = Mdr_Register(&factory, sizeof(GUIModule), sizeof(GUIInstance), &GUIConstruct, &GUIDestruct);
+//    Mdr_Module guiscript = Mdr_Register(&factory, sizeof(GUIScriptModule), sizeof(GUIScriptInstance), &GUIScriptConstruct, &GUIScriptDestruct);
 
     return 0;
 }

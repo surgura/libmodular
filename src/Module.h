@@ -15,7 +15,7 @@
 /**
     Include files
 **/
-#include "Types.h"
+#include "Modular/Types.h"
 
 /**
     Information about a registered module.
@@ -24,18 +24,18 @@ typedef struct
 {
     /**
         The function that is called when a new instance is instantiated.
-        void* arg0      A pointer to the common object
-        void* arg1      A pointer to the module instance object
+        arg0    The id of this module.
+        arg1    The id of the instance being created.
     **/
     void (*construct)(Mdr_ModuleId, Mdr_InstanceId);
     /**
         The function that is called when an instance is destroyed.
-        void* arg0      A pointer to the common object
-        void* arg1      A pointer to the module instance object
+        arg0    The id of this module.
+        arg1    The id of the instance being destroyed.
     **/
     void (*destruct)(Mdr_ModuleId, Mdr_InstanceId);
     /**
-        The offset from the pointer to an instance an instance of this module is stored in bytes.
+        The offset from a pointer to an instance, to the instance data of this module, in bytes.
     **/
     u64 instanceOffset;
 } Mdr_Module;

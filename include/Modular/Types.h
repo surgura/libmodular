@@ -12,6 +12,11 @@
 #ifndef MDR_TYPES_H
 #define MDR_TYPES_H
 
+/**
+    This file defines numeric types
+    that can be easily changed for platform portability.
+**/
+
 // Signed integers
 typedef signed char s8;
 typedef signed short s16;

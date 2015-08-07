@@ -27,12 +27,14 @@ typedef struct
         The sum of the size of all registered modules' instances.
     **/
     u64 moduleInstancesSizeSum;
+
     /**
         List of registered modules.
-        A the data of the node consists of a module struct,
+        The data of the node consists of a module struct,
         followed by an arbitrarily sized piece of data for the module common data.
     **/
     Mdr_LinkedList modules;
+
     /**
         List of instances.
     **/
