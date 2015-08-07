@@ -1,7 +1,7 @@
 [Must]
-Register modules
-Create object from all module instances
-Delete objects
+[X] Register modules
+[X] Create object from all module instances
+[X] Delete objects
 
 [Should]
 Unregister modules
