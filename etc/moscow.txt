@@ -5,7 +5,7 @@
 
 [Should]
 Unregister modules
-C++ binding
+[X]C++ binding
 Object pool for creating instances
 
 [Could]

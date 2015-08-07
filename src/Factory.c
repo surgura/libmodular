@@ -15,12 +15,12 @@
 
 void* GetCommonData(Mdr_Module* module)
 {
-    return (u8*)module + sizeof(Mdr_Module);
+    return (Mdr_U8*)module + sizeof(Mdr_Module);
 }
 
 void* GetInstanceData(Mdr_Module* module, void* instance)
 {
-    return (u8*)instance + module->instanceOffset;
+    return (Mdr_U8*)instance + module->instanceOffset;
 }
 
 void Mdr_Initialize(Mdr_Factory* factory)
@@ -36,11 +36,11 @@ void Mdr_Cleanup(Mdr_Factory* factory)
     Mdr_LinkedList_Cleanup(&factory->instances);
 }
 
-Mdr_Result Mdr_Register(Mdr_Factory* factory, Mdr_ModuleId* moduleResult, u32 moduleSize, u32 instanceSize,
+Mdr_Result Mdr_Register(Mdr_Factory* factory, Mdr_ModuleId* moduleResult, Mdr_U32 moduleSize, Mdr_U32 instanceSize,
                         void (*construct)(Mdr_ModuleId, Mdr_InstanceId), void (*destruct)(Mdr_ModuleId, Mdr_InstanceId))
 {
     // Calculate size of the data in the linked list node
-    u32 nodeSize = sizeof(Mdr_Module) + moduleSize;
+    Mdr_U32 nodeSize = sizeof(Mdr_Module) + moduleSize;
 
     // Add module to module list
     Mdr_LinkedListNode* moduleNode;

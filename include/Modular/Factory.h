@@ -26,7 +26,7 @@ typedef struct
     /**
         The sum of the size of all registered modules' instances.
     **/
-    u64 moduleInstancesSizeSum;
+    Mdr_U64 moduleInstancesSizeSum;
 
     /**
         List of registered modules.

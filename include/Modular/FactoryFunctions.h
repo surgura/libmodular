@@ -85,7 +85,7 @@ void Mdr_Cleanup(Mdr_Factory* factory);
             MDR_ALLOC_ERROR Allocing memory was needed but it failed.
                             No data was changed.
 **/
-Mdr_Result Mdr_Register(Mdr_Factory* factory, Mdr_ModuleId* moduleResult, u32 moduleSize, u32 instanceSize,
+Mdr_Result Mdr_Register(Mdr_Factory* factory, Mdr_ModuleId* moduleResult, Mdr_U32 moduleSize, Mdr_U32 instanceSize,
                         void (*construct)(Mdr_ModuleId, Mdr_InstanceId), void (*destruct)(Mdr_ModuleId, Mdr_InstanceId));
 
 /**

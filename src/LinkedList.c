@@ -29,10 +29,10 @@ void Mdr_LinkedList_Cleanup(Mdr_LinkedList* list)
     }
 }
 
-Mdr_LinkedList_Result Mdr_LinkedList_PushBack(Mdr_LinkedList* list, Mdr_LinkedListNode** resultNode, u32 dataSize)
+Mdr_LinkedList_Result Mdr_LinkedList_PushBack(Mdr_LinkedList* list, Mdr_LinkedListNode** resultNode, Mdr_U32 dataSize)
 {
     // Calculate size of node
-    u64 nodeSize = sizeof(Mdr_LinkedListNode) + dataSize;
+    Mdr_U32 nodeSize = sizeof(Mdr_LinkedListNode) + dataSize;
     // Alocate memory for node
     Mdr_LinkedListNode* newNode = malloc(nodeSize);
     if(newNode == 0)
@@ -110,5 +110,5 @@ Mdr_LinkedListNode* Mdr_LinkedList_Previous(Mdr_LinkedListNode* node)
 void* Mdr_LinkedList_GetData(Mdr_LinkedListNode* node)
 {
     // Skip node struct to get to the data
-    return (u8*)node + sizeof(Mdr_LinkedListNode);
+    return (Mdr_U8*)node + sizeof(Mdr_LinkedListNode);
 }

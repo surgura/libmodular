@@ -37,7 +37,7 @@ typedef struct
     /**
         The offset from a pointer to an instance, to the instance data of this module, in bytes.
     **/
-    u64 instanceOffset;
+    Mdr_U64 instanceOffset;
 } Mdr_Module;
 
 /**

@@ -17,21 +17,9 @@
     that can be easily changed for platform portability.
 **/
 
-// Signed integers
-typedef signed char s8;
-typedef signed short s16;
-typedef signed int s32;
-typedef signed long s64;
-
-// Unsigned integers
-typedef unsigned char u8;
-typedef unsigned short u16;
-typedef unsigned int u32;
-typedef unsigned long u64;
-
-// Floating point
-typedef float f32;
-typedef double f64;
+typedef unsigned char Mdr_U8;
+typedef unsigned int Mdr_U32;
+typedef unsigned long Mdr_U64;
 
 /**
     End header guard

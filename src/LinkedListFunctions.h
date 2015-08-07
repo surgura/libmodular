@@ -59,7 +59,7 @@ void Mdr_LinkedList_Cleanup(Mdr_LinkedList* list);
             MDR_ALLOC_ERROR Allocing memory was needed but it failed.
                             No data was changed.
 **/
-Mdr_LinkedList_Result Mdr_LinkedList_PushBack(Mdr_LinkedList* list, Mdr_LinkedListNode** resultNode, u32 dataSize);
+Mdr_LinkedList_Result Mdr_LinkedList_PushBack(Mdr_LinkedList* list, Mdr_LinkedListNode** resultNode, Mdr_U32 dataSize);
 
 /**
     Remove a node from the list.
