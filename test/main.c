@@ -102,6 +102,9 @@ int main()
     Mdr_Instantiate(&factory, &instance);
 
     Mdr_Destroy(&factory, instance);
+
+    Mdr_Cleanup(&factory);
+
     while(1)
     {
 

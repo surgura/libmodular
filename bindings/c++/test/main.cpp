@@ -1,14 +1,13 @@
-#ifndef MY_MODULE_H
-#define MY_MODULE_H
-
-// main header for LibModular
-#include "Modular/Modular.h"
+#include <ModularCpp/Factory.hpp>
 
 // needed for printf
 #include <stdio.h>
 
 // needed for generating a random number
 #include <stdlib.h>
+
+#include <string>
+#include <iostream>
 
 // this struct will be shared between all module instances
 typedef struct
@@ -29,7 +28,7 @@ void MyModuleConstruct(Mdr_ModuleId module, Mdr_InstanceId instance)
 {
     // we can do some fun stuff with our new instance.
     // first, get the instance
-    MyModuleInstance* myModuleInstance = Mdr_GetModuleInstanceData(module, instance);
+    MyModuleInstance* myModuleInstance = Modular::Factory::GetModuleInstanceData<MyModuleInstance>(module, instance);
 
     // say we want to assign some random integer
     // we will later show this when we destruct our instance, just so we can identify between two instances.
@@ -44,11 +43,11 @@ void MyModuleDestruct(Mdr_ModuleId module, Mdr_InstanceId instance)
 {
     // we want to show the number we assigned earlier at constructing.
     // get the instance
-    MyModuleInstance* myModuleInstance = Mdr_GetModuleInstanceData(module, instance);
+    MyModuleInstance* myModuleInstance = Modular::Factory::GetModuleInstanceData<MyModuleInstance>(module, instance);
 
     // all MyModuleInstances have a common MyModule object.
     // Lets also show the number contained in there so we can prove this.
-    MyModule* myModule = Mdr_GetModuleCommonData(module);
+    MyModule* myModule = Modular::Factory::GetModuleCommonData<MyModule>(module);
 
     // show the instance number and common object number.
     printf("Destructing MyModuleInstance. myInstanceNumber: %d myCommonNumber: %d\n",
@@ -58,43 +57,45 @@ void MyModuleDestruct(Mdr_ModuleId module, Mdr_InstanceId instance)
 
 int main()
 {
-    // initialize a factory object
-    Mdr_Factory factory;
-    Mdr_Initialize(&factory);
+    Modular::Factory factory;
 
-    // tell the factory we want it to use our module
     Mdr_ModuleId myModuleId;
-    Mdr_Register(&factory, &myModuleId, sizeof(MyModule), sizeof(MyModuleInstance), &MyModuleConstruct, &MyModuleDestruct);
+    try
+    {
+        myModuleId = factory.Register(sizeof(MyModule), sizeof(MyModuleInstance), &MyModuleConstruct, &MyModuleDestruct);
+    }
+    catch (Mdr_Result)
+    {
+        return -1;
+    }
 
-    // we can request the common data between all module instances.
-    MyModule* myModule = Mdr_GetModuleCommonData(myModuleId);
-    // lets assign its number so we can prove its common between all instances
+    MyModule* myModule = factory.GetModuleCommonData<MyModule>(myModuleId);
     myModule->myCommonNumber = 1234;
 
-    // tell the factory to create an instance.
-    // this actually calls the construct function for every registered module in order of registration.
-    // however, we have only one registered.
-    Mdr_InstanceId instance;
-    Mdr_Instantiate(&factory, &instance);
-
-    // lets create another one so we can see they use a different MyModuleInstance
-    Mdr_InstanceId instance2;
-    Mdr_Instantiate(&factory, &instance2);
-
-    // destroy the instances.
-    // this calls the destruct function in reverse order of registration.
-    Mdr_Destroy(&factory, instance);
-    Mdr_Destroy(&factory, instance2);
-
-    Mdr_Cleanup(&factory);
-
-    // we just loop so we can easily read the output
-    while(1)
+    Mdr_InstanceId instance1;
+    try
     {
-
+        instance1 = factory.Instantiate();
     }
+    catch (Mdr_Result)
+    {
+        return -1;
+    }
+
+    Mdr_InstanceId instance2;
+    try
+    {
+        instance2 = factory.Instantiate();
+    }
+    catch (Mdr_Result)
+    {
+        return -1;
+    }
+
+    factory.Destroy(instance1);
+    factory.Destroy(instance2);
+
+    while(1){}
 
     return 0;
 }
-
-#endif // MY_MODULE_H

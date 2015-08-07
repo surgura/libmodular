@@ -1,0 +1,28 @@
+# depslib dependency file v1.0
+1438945882 source:d:\drive\documents\projects\libmodular\bindings\c++\test\main.cpp
+	<ModularCpp/Factory.hpp>
+	<stdio.h>
+	<stdlib.h>
+	<string>
+	<iostream>
+
+1438945845 d:\drive\documents\projects\libmodular\bindings\c++\include\modularcpp\factory.hpp
+	<Modular/Modular.h>
+	<iostream>
+
+1438938467 d:\drive\documents\projects\libmodular\include\modular\modular.h
+	"FactoryFunctions.h"
+
+1438937923 d:\drive\documents\projects\libmodular\include\modular\factoryfunctions.h
+	"Types.h"
+	"Factory.h"
+
+1438936066 d:\drive\documents\projects\libmodular\include\modular\types.h
+
+1438935859 d:\drive\documents\projects\libmodular\include\modular\factory.h
+	"Types.h"
+	"LinkedList.h"
+
+1433607249 d:\drive\documents\projects\libmodular\include\modular\linkedlist.h
+	"Types.h"
+
