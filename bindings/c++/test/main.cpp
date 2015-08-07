@@ -9,51 +9,48 @@
 #include <string>
 #include <iostream>
 
-// this struct will be shared between all module instances
-typedef struct
+class MyModule
 {
+public:
     int myCommonNumber;
-} MyModule;
+};
 
-// each instance have its own object of this struct
-typedef struct
+class MyModuleInstance
 {
+private:
     int myInstanceNumber;
-} MyModuleInstance;
+public:
 
-// construct an instance.
-// we get passed the id of the module we are constructing an instance(MyModuleInstance) for
-// and the id of the factories instances, so we can request our own little part from it(which thus is MyModuleInstance).
-void MyModuleConstruct(Mdr_ModuleId module, Mdr_InstanceId instance)
-{
-    // we can do some fun stuff with our new instance.
-    // first, get the instance
-    MyModuleInstance* myModuleInstance = Modular::Factory::GetModuleInstanceData<MyModuleInstance>(module, instance);
+    static void Construct(Mdr_ModuleId module, Mdr_InstanceId instance)
+    {
+        // we can do some fun stuff with our new instance.
+        // first, get the instance
+        MyModuleInstance* myModuleInstance = Modular::Factory::GetModuleInstanceData<MyModuleInstance>(module, instance);
 
-    // say we want to assign some random integer
-    // we will later show this when we destruct our instance, just so we can identify between two instances.
-    myModuleInstance->myInstanceNumber = rand() % 100;
+        // say we want to assign some random integer
+        // we will later show this when we destruct our instance, just so we can identify between two instances.
+        myModuleInstance->myInstanceNumber = rand() % 100;
 
-    // show the number
-    printf("Constructing MyModuleInstance. myInstanceNumber: %d\n", myModuleInstance->myInstanceNumber);
-}
+        // show the number
+        printf("Constructing MyModuleInstance. myInstanceNumber: %d\n", myModuleInstance->myInstanceNumber);
+    }
 
-// this function is pretty much the same as ModuleConstruct, except it is called when our instance should be destructed.
-void MyModuleDestruct(Mdr_ModuleId module, Mdr_InstanceId instance)
-{
-    // we want to show the number we assigned earlier at constructing.
-    // get the instance
-    MyModuleInstance* myModuleInstance = Modular::Factory::GetModuleInstanceData<MyModuleInstance>(module, instance);
+    static void Destruct(Mdr_ModuleId module, Mdr_InstanceId instance)
+    {
+        // we want to show the number we assigned earlier at constructing.
+        // get the instance
+        MyModuleInstance* myModuleInstance = Modular::Factory::GetModuleInstanceData<MyModuleInstance>(module, instance);
 
-    // all MyModuleInstances have a common MyModule object.
-    // Lets also show the number contained in there so we can prove this.
-    MyModule* myModule = Modular::Factory::GetModuleCommonData<MyModule>(module);
+        // all MyModuleInstances have a common MyModule object.
+        // Lets also show the number contained in there so we can prove this.
+        MyModule* myModule = Modular::Factory::GetModuleCommonData<MyModule>(module);
 
-    // show the instance number and common object number.
-    printf("Destructing MyModuleInstance. myInstanceNumber: %d myCommonNumber: %d\n",
-           myModuleInstance->myInstanceNumber,
-           myModule->myCommonNumber);
-}
+        // show the instance number and common object number.
+        printf("Destructing MyModuleInstance. myInstanceNumber: %d myCommonNumber: %d\n",
+               myModuleInstance->myInstanceNumber,
+               myModule->myCommonNumber);
+    }
+};
 
 int main()
 {
@@ -62,7 +59,7 @@ int main()
     Mdr_ModuleId myModuleId;
     try
     {
-        myModuleId = factory.Register(sizeof(MyModule), sizeof(MyModuleInstance), &MyModuleConstruct, &MyModuleDestruct);
+        myModuleId = factory.Register<MyModule, MyModuleInstance>();
     }
     catch (Mdr_Result)
     {

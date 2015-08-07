@@ -1,14 +1,13 @@
 # depslib dependency file v1.0
-1438945882 source:d:\drive\documents\projects\libmodular\bindings\c++\test\main.cpp
+1438953646 source:d:\drive\documents\projects\libmodular\bindings\c++\test\main.cpp
 	<ModularCpp/Factory.hpp>
 	<stdio.h>
 	<stdlib.h>
 	<string>
 	<iostream>
 
-1438945845 d:\drive\documents\projects\libmodular\bindings\c++\include\modularcpp\factory.hpp
+1438954601 d:\drive\documents\projects\libmodular\bindings\c++\include\modularcpp\factory.hpp
 	<Modular/Modular.h>
-	<iostream>
 
 1438938467 d:\drive\documents\projects\libmodular\include\modular\modular.h
 	"FactoryFunctions.h"
@@ -25,4 +24,14 @@
 
 1433607249 d:\drive\documents\projects\libmodular\include\modular\linkedlist.h
 	"Types.h"
+
+1438953142 d:\drive\documents\projects\libmodular\bindings\c++\include\modularcpp\instance.hpp
+	<iostream>
+
+1438952942 d:\drive\documents\projects\libmodular\bindings\c++\test\test.h
+	<ModularCpp/Instance.hpp>
+	<stdio.h>
+	<stdlib.h>
+	<string>
+	<iostream>
 

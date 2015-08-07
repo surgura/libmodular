@@ -19,7 +19,6 @@ extern "C"
 {
 #include <Modular/Modular.h>
 }
-#include <iostream>
 
 namespace Modular
 {
@@ -32,6 +31,7 @@ class Factory
 {
 private:
     Mdr_Factory factory;
+
 public:
     Factory()
     {
@@ -45,17 +45,18 @@ public:
 
     /**
         Binding for the Mdr_Register function.
-        @param  moduleSize      As the original argument.
-        @param  instanceSize    As the original argument.
-        @param  construct       As the original argument.
-        @param  destruct        As the original argument.
-        @return                 As the original moduleResult argument, but as a direct return value.
-        @throw  Mdr_Result      As the original return value.
+        @tpl    CommonObjectType    The type of the common object.
+        @tpl    InstanceType        The type of the instance object.
+                                    Should contain two static functions equal to the construct and destruct
+                                    functions passed to the original function.
+        @return                     As the original moduleResult argument, but as a direct return value.
+        @throw  Mdr_Result          As the original return value.
     **/
-    Mdr_ModuleId Register(u32 moduleSize, u32 instanceSize, void (*construct)(Mdr_ModuleId, Mdr_InstanceId), void (*destruct)(Mdr_ModuleId, Mdr_InstanceId))
+    template <typename CommonObjectType, typename InstanceType>
+    Mdr_ModuleId Register()
     {
         Mdr_ModuleId moduleId;
-        if (Mdr_Register(&factory, &moduleId, moduleSize, instanceSize, construct, destruct) == MDR_ALLOC_ERROR)
+        if (Mdr_Register(&factory, &moduleId, sizeof(CommonObjectType), sizeof(InstanceType), InstanceType::Construct, InstanceType::Destruct))
             throw MDR_ALLOC_ERROR;
         return moduleId;
     }
