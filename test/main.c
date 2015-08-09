@@ -98,12 +98,8 @@ int main()
     GUIScriptModule* guiscriptcommondata = Mdr_GetModuleCommonData(guiscript);
     guiscriptcommondata->script = script;
 
-    Mdr_InstanceId instance;
-    Mdr_Instantiate(&factory, &instance);
 
-    Mdr_Destroy(&factory, instance);
 
-    Mdr_Cleanup(&factory);
 
     while(1)
     {

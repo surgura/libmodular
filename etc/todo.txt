@@ -1,2 +1,3 @@
 - Verify requesting 0 byte common data returns 0 pointer
 - Verify requesting 0 byte instance returns 0 pointer
+- Swap id typedefs to structs
