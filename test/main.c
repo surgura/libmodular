@@ -14,7 +14,7 @@ typedef struct
 void ScriptConstruct(Mdr_ModuleId module, Mdr_InstanceId instance)
 {
     printf("Script construct");
-    // Initialize script shit
+    // Initialize script stuff
     ScriptInstance* scriptinstance = Mdr_GetModuleInstanceData(module, instance);
     scriptinstance->test = 15;
 }
@@ -22,12 +22,12 @@ void ScriptConstruct(Mdr_ModuleId module, Mdr_InstanceId instance)
 void ScriptDestruct(Mdr_ModuleId module, Mdr_InstanceId instance)
 {
     printf("Script destruct");
-    // Remove script shit
+    // Remove script stuff
 }
 
 void RegisterScriptFunction(ScriptModule* module, ScriptInstance* instance, const char* functionName)
 {
-    // Do shit
+    // Do stuff
     printf("\n%d\n", instance->test);
 }
 
@@ -44,13 +44,13 @@ typedef struct
 void GUIConstruct(Mdr_ModuleId module, Mdr_InstanceId instance)
 {
     printf("GUI construct");
-    // Initialize gui shit
+    // Initialize gui stuff
 }
 
 void GUIDestruct(Mdr_ModuleId module, Mdr_InstanceId instance)
 {
     printf("GUI destruct");
-    // Remove gui shit
+    // Remove gui stuff
 }
 
 
